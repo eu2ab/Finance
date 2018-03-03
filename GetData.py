@@ -58,7 +58,7 @@ def QUANDL_price(tickers, start, end):
     :return: dataframe with columns of different stock tickers, indexed between start and end date
     """
     # converting tickers to "code"
-    i=0
+    i = 0
     code = []
     if len(tickers) == 1:
         code = ['WIKI/' + str(tickers[0]) + '.11']
@@ -74,7 +74,31 @@ def QUANDL_price(tickers, start, end):
     df.columns = tickers
     return df
 
-### Use .pct_change() to convert the above prices to percent changes (pandas function on pandas dataframe)
+
+def QUANDL_price_pct_change(tickers, start, end):
+    """
+    :param tickers: list of tickers
+    :param start: datetime.date(yyyy, m, d)
+    :param end: datetime.date(yyyy, m, d)
+    :return: dataframe with columns of different stock tickers, indexed between start and end date, w/ pct change
+    """
+    # converting tickers to "code"
+    i = 0
+    code = []
+    if len(tickers) == 1:
+        code = ['WIKI/' + str(tickers[0]) + '.11']
+    else:
+        code = ['WIKI/' + str(tickers[0]) + '.11']
+        for i in range(1, len(tickers)):
+            add = 'WIKI/' + str(tickers[i]) + '.11'
+            code.append(add)
+
+    df = quandl.get(code, start_date=start, end_date=end, authtoken="63rHV5FhAYL36rmWhjP7")
+    # quandl.get(['WIKI/AAPL.11']) gets only the closing prices for apple
+    # quandl.get(['WIKI/AAPL.11','WIKI/MSFT.11']) gets only the closing prices for apple and microsoft
+    df.columns = tickers
+    df = df.pct_change()
+    return df
 
 
 def ShortInterest(tickers, start, end):
@@ -87,7 +111,7 @@ def ShortInterest(tickers, start, end):
     :return: short interest, average volume, and Days to Cover for chosen tickers
     """
     # converting tickers to "code"
-    i=0
+    i = 0
     code = []
     if len(tickers) == 1:
         code = ['SI/' + str(tickers[0]) + '_SI']

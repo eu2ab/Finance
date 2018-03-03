@@ -1,7 +1,8 @@
-from Finance.GetData import balance_sheet, income_statement, ratios_download
+from GetData import balance_sheet, income_statement, ratios_download
 
 # Explaining the script and pulling in tickers to analyze and build balance sheets
-print("Script will save company balance sheet infor for the last 5 quarters as a .csv file on your desktop. You can run it for as many securities as you would like.")
+print("Script will save company balance sheet infor for the last 5 quarters as a .csv "
+      "file on your desktop. You can run it for as many securities as you would like.")
 print(" ")
 input_list = input('Please enter tickers, separated by one space only (e.g., AAPL CSCO): ').split()
 tickers = [x for x in input_list]
@@ -23,11 +24,9 @@ for x in tickers:
     df.to_csv('%s.csv' % name)
 
 
-
-
 # TO DO LIST
-    #save all to desktop
-    #build out valuation ratios to the bottom (e.g., EV/EBITDA
+    # save all to desktop
+    # build out valuation ratios to the bottom (e.g., EV/EBITDA)
 
 
 # aapl.loc['Total cash'].plot() # graph total cash over the quarters
