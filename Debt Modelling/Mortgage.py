@@ -49,6 +49,34 @@ def amortization_table(principal, rate, term):
     return df
 
 
+def amortization_int_princ_graph(df):
+    """
+    Function returns a graph of the interest and principal payments of the amortization schedule
+    :param df: data frame containing the amortization table, configured based on the formula above
+    """
+    import matplotlib.pyplot as plt
+    ts = df[["Interest", "Principal"]]  # extracting only relevant columns, in this case the data on interest
+    # and principal payments
+
+    # find the breakeven point during which principal starts exceeding interest payments
+    ts_diff = ts.Interest - ts.Principal
+    ts_diff = ts_diff.astype(float)
+    find_t = np.sign(ts_diff) != np.sign(ts_diff.shift(1))
+    truth_num = find_t.index[find_t].tolist()  # find index number where True (where signs will have crossed)
+    truth_num = truth_num[1]  # skips the first item since that item was made True due to a NaN earlier in the process
+    int_int = ts.iloc[truth_num].Interest   # Value of interest payment at intersecting loan
+    int_princ = ts.iloc[truth_num].Principal    # Value of Principal payment at intersecting loan
+    midpoint = (int_int + int_princ)/2  # average both payments to find midpoint y coordinate
+
+    # start plotting out the graph
+    ts.plot(title="Interest and Principal Payments of Amortization Schedule")
+    plt.annotate('Breakeven: ${0} at {1} months'.format(round(midpoint, 2), truth_num),
+                 xy=(truth_num, midpoint))  # annotation for the breakeven point
+    plt.xlabel("Length of Loan (months)")
+    plt.ylabel("Value of Payment (in USD)")
+    plt.show()  # actual shows the plot in  interactive mode
+
+
 def irr(deposit, cf_monthly, term):
     """
     Returns an IRR given outflows, inflows, and term length.
