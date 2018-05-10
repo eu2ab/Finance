@@ -2,46 +2,49 @@ import pandas as pd
 import numpy as np
 
 
-def mortgage_payment(principal, rate, term):
+def monthly_pmt(principal, rate, term):
     """
         Calculates the payment on a loan
-        :param principal: principal
-        :param rate: interest rate, shown as an APR (4% is '4')
-        :param term: number of months
-        :return: payment
+        :param principal: principal loan amount outstanding
+        :param rate: interest rate, shown as an APR (4% is '.04')
+        :param term: number of months left
+        :return: monthly payment
         """
-    ratepertwelve = rate / (12 * 100.0)  # monthly payment rate
-    result = principal * (ratepertwelve / (1 - (1 + ratepertwelve) ** (-term)))  # monthly payment total
-    result = round(result, 2)
-    return result
+    rate_monthly = ((1 + rate) ** (1/12)) - 1  # monthly payment rate
+    pmt = round(principal * (rate_monthly * (1 + rate_monthly)**(term)) /
+                ((1 + rate_monthly)**(term) - 1), 2)  # monthly payment total
+    return pmt
 
 
 def amortization_table(principal, rate, term):
     """
-    Creates amortization table, including: payment no., beginning balance, payment, principal, interest, end balance
-    :param principal: principal payment on a loan
-    :param rate: interest rate, shown as an APR (4% is '4')
-    :param term: number of months
+    Creates amortization table, including: payment no., beginning balance, payment,
+    principal, interest, end balance
+    :param principal: principal loan amount outstanding
+    :param rate: interest rate, shown as an APR (4% is '0.04')
+    :param term: number of months left
     :return: table
     """
     # build empty dataframe to fill in
     headers = ['Beginning Balance', 'Payment', 'Interest', 'Principal', 'Ending Balance']
-    index = list(range(1, term + 1, 1))
+    index = list(range(1, term + 1))
     df = pd.DataFrame(index=index, columns=headers)
+    rate_monthly = ((1 + rate) ** (1 / 12)) - 1  # monthly payment rate
 
-    payment = mortgage_payment(principal, rate, term)
-    begbal = principal
+    # populate first row of data
+    df.iloc[0,0] = principal
+    df.iloc[0,1] = round(monthly_pmt(principal, rate, term), 2)
+    df.iloc[0,2] = round(principal * rate_monthly, 2)
+    df.iloc[0,3] = df.iloc[0,1] - round(principal * rate_monthly, 2)
+    df.iloc[0,4] = principal - df.iloc[0,3]
 
-    for i in range(1, term + 1):
-        df.ix[i, 0] = round(begbal, 2)
-        df.ix[i, 1] = round(payment, 2)
-        interest = begbal * (rate / (12 * 100))
-        df.ix[i, 2] = round(interest, 2)
-        principal = payment - interest
-        df.ix[i, 3] = round(principal, 2)
-        endbal = begbal - principal
-        df.ix[i, 4] = round(endbal, 2)
-        begbal = endbal
+    # populate rest of amortization schedule based on data after first row
+    for i in range(1, term):
+        df.iloc[i, 0] = df.iloc[i-1, 4]  # takes the ending balance from the previous row
+        df.iloc[i, 1] = round(monthly_pmt(principal, rate, term), 2)  # monthly payment is always the same
+        df.iloc[i, 2] = round(df.iloc[i, 0] * rate_monthly, 2)
+        df.iloc[i, 3] = df.iloc[i, 1] - df.iloc[i, 2]
+        df.iloc[i, 4] = df.iloc[i, 0] - df.iloc[i, 3]
 
     return df
 
@@ -63,24 +66,25 @@ def irr(deposit, cf_monthly, term):
 
 
 def mortgage_stats(rent, value, principal, interest_rate, term,
-                   insurance_rate=0.035, tax_rate=1.1, vacancy_rate=7, hoa=150):
+                   insurance_rate=0.035, tax_rate=0.1, vacancy_rate=0.07, hoa=150):
     """
     A summary of mortgage statistics
-    :param rent: anticipated rental income
+    :param rent: anticipated monthly rental income
     :param value: total value of home, represented in USD
     :param principal: total value of loan, represented in USD
-    :param interest_rate: interest rate on loan, presented as APR (4% is '4')
+    :param interest_rate: interest rate on loan, presented as APR (4% is '0.04')
     :param term: number of months
     :param insurance_rate: cost of insurance, represented as % of value (default = 0.035, from Zillow)
-    :param tax_rate: cost of tax, represented as a % of value(default = 1.1, to represent VA real estate rate)
-    :param vacancy_rate: expected vacancy rate (default = 7, the average US rate)
-    :param hoa: home owner association fees, represented in USD (default = 150)
+    :param tax_rate: cost of tax, represented as a % of value
+                    (default = 0.10 to represent VA real estate rate)
+    :param vacancy_rate: expected vacancy rate (default = 0.07, the average US rate)
+    :param hoa: monthly home owner association fees, represented in USD (default = 150)
     :return: A table of mortgage statistics
     """
     deposit = value - principal
-    payment = mortgage_payment(principal, interest_rate, term) + (insurance_rate * value / 100) + \
-              (tax_rate * value / (12 * 100)) + hoa  # expected monthly payment
-    income = rent - (vacancy_rate * rent / (12 * 100))  # anticipated monthly income, adjusted for vacancy rate
+    payment = monthly_pmt(principal, interest_rate, term) + (insurance_rate * value / 12) + \
+              (tax_rate * value / 12) + hoa  # expected monthly payment
+    income = rent - (vacancy_rate * rent / 12)  # anticipated monthly income, adjusted for vacancy rate
     cf_monthly = income - payment
 
     breakeven_months = deposit / cf_monthly  # represents the number of months needed to make the deposit back
