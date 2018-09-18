@@ -50,7 +50,7 @@ def SP500():
     return symbols
 
 
-def QUANDL_price(tickers, start, end):
+def QUANDL_prices(tickers, start, end):
     """
     :param tickers: list of tickers
     :param start: datetime.date(yyyy, m, d)

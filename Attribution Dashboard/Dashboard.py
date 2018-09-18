@@ -1,3 +1,7 @@
+# https://medium.com/@plotlygraphs/introducing-dash-5ecf7191b503
+# https://plot.ly/~jackp/17561/import-dash-from-dashdependencies-impor/#/
+# https://plot.ly/products/dash/
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,4 +20,4 @@ df = pd.DataFrame({'Ticker': ['AAPL', 'GOOGL', 'TSLA'],
                    'Cost Basis': [100, 100, 100],
                    'Date of Purchase': [dt.date(2016, 1, 1), dt.date(2016, 1, 1), dt.date(2016, 1, 1)],
                    'Delta': [15, 15, 15]})  # Build initial dataframe
-df['Stock Price'] =
+df['Stock Price'] = QUANDL_price('AAPL')
