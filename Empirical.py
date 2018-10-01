@@ -1,7 +1,7 @@
 from __future__ import division
 import numpy as np
 import pandas as pd
-from GetData import QUANDL_price, getFRED
+from GetData import QUANDL_prices, getFRED
 import statsmodels.api as sm
 
 

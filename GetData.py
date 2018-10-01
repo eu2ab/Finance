@@ -101,6 +101,22 @@ def QUANDL_price_pct_change(tickers, start, end):
     return df
 
 
+# def Fundamentals(tickers):
+#     for x in tickers:
+#         name = str(x)
+#         df1 = balance_sheet(name, 'q')  # calling balance sheet metrics
+#         df2 = income_statement(name, 'q')  # calling income statement metrics
+#         df3 = ratios_download(name)  # calling financial ratios
+#         df = df1.append(df2)  # combining balance sheet and income, vertically appended
+#         df = df.append(df3)  # adding financial ratios
+#         #
+#         # # add columns for growth changes
+#         # for i in range(0, len(df1.columns) - 1):
+#         #     colname = str(df1.columns[i]) + "/" + str(df1.columns[i + 1])
+#         #     df[colname] = (df1.iloc[:, i] / df1.iloc[:, i + 1]) - 1
+#     return df
+
+
 def ShortInterest(tickers, start, end):
     """
     Short interest for basket of stocks. Not as comprehensive, thus would advise against doing
