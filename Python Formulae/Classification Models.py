@@ -1,45 +1,11 @@
 # Import packages
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import scipy as sp
-import codecs, json
-import soundfile as sf
-import librosa
-import os
-import sox
-
-from google.protobuf.json_format import MessageToDict
-from google.cloud import storage, speech
-from google.cloud.speech import enums, types
-
-import nltk
-from nltk.corpus import stopwords
-from nltk.stem.snowball import SnowballStemmer
-
-nltk.downloader.download('punkt')  # obtain resource 'punkt'
-nltk.downloader.download('stopwords')  # obtain resource 'stopwords'
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer, ENGLISH_STOP_WORDS
-from sklearn.decomposition import NMF
-
-import gensim
-from gensim.utils import simple_preprocess
-from gensim.parsing.preprocessing import STOPWORDS
-from nltk.stem import WordNetLemmatizer
-from nltk.stem.porter import *
-
-nltk.download('wordnet')
-
-from sklearn import model_selection
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import SGDClassifier
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder, normalize, MinMaxScaler
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, GradientBoostingClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 from xgboost import XGBClassifier
-from sklearn.cluster.bicluster import SpectralBiclustering, SpectralCoclustering
-
 
 def classificationModels(data, dep_var):
     """

@@ -1,14 +1,11 @@
+# Import packages
 from GetData import QUANDL_price_pct_change
 from Empirical import port_beta
 import datetime
 import pandas as pd
 
-# Deprecated because QUANDL_price_pct_change does not support SPY. Original Yahoo Fiannce function
-# created to use SPY has been deprecated.
-
 start = datetime.date(2016, 1, 1)
 end = datetime.date.today()
-
 stocks = pd.DataFrame(['GS', 'TLT', 'HYG'], columns=['Securities'])
 weights = pd.DataFrame([.5, .25, .25], columns=['Portfolio Weights'])
 df = pd.concat([stocks, weights], axis=1)
@@ -22,7 +19,7 @@ def beta_table(stocks_weights, start, end):
     :param end: end date
     :return: table
     """
-    # due to the nature of the percentchange function, first data point is always NaN, get around this
+    # Due to the nature of the percentchange function, first data point is always NaN, get around this
     market = QUANDL_price_pct_change('SPY', start, end)
     market = market[1:]
 
@@ -38,4 +35,4 @@ def beta_table(stocks_weights, start, end):
     betas = pd.DataFrame(betas, columns=['Beta'])
     weighted = pd.DataFrame(weighted, columns=['Weighted Beta'])
     final = pd.concat([df, betas, weighted], axis=1)
-    return final
+    return (final)
