@@ -305,3 +305,6 @@ def audioTimestamps(state, time):
 
     # Return a list of the starting and ending times
     return ([start, end])
+
+
+def audioCMUSphinxTranscription(audio):
